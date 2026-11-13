@@ -1,0 +1,24 @@
+{
+  "name": "social-media-platform",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -k \"npm run dev:web\" \"npm run dev:api\"",
+    "dev:web": "npm run dev --workspace=@social/web",
+    "dev:api": "npm run dev --workspace=@social/api"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "concurrently": "^9.2.5"
+  },
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}
