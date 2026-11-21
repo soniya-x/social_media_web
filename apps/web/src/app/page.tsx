@@ -4,6 +4,3 @@ export default function Home() {
   redirect("/home");
 }
 
-export default function ProfilePage(){
-  redirect("/profile");
-}
