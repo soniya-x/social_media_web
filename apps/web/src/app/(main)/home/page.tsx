@@ -1,4 +1,8 @@
 
+"use client";
+
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -8,17 +12,12 @@ import { posts } from "@/features/feed/data/posts";
 
 export default function HomePage() {
   return (
-    <div className="
-      mx-auto
-      w-full
-      max-w-[620px]
-      space-y-5
-      px-3
-      sm:space-y-7
-      sm:px-4
-      lg:px-0
-    ">
-
+    <div
+      className="
+        mx-auto w-full max-w-[620px] space-y-5 px-3
+        sm:space-y-7 sm:px-4 lg:px-0
+      "
+    >
       {/* Page Heading */}
       <div className="flex items-center justify-between">
         <div>
@@ -34,13 +33,9 @@ export default function HomePage() {
 
       {/* Create Post Section */}
       <Card>
-        <CardContent className="
-          flex items-center
-          gap-2
-          p-3
-          sm:gap-3
-          sm:p-4
-        ">
+        <CardContent
+          className="flex items-center gap-2 p-3 sm:gap-3 sm:p-4"
+        >
           <UserAvatar
             name="Soniya Patidar"
             className="h-9 w-9 shrink-0 sm:h-11 sm:w-11"
@@ -56,18 +51,18 @@ export default function HomePage() {
             </p>
           </div>
 
-          <Button
-            size="sm"
-            className="shrink-0 text-xs sm:text-sm"
-          >
-            Create Post
-          </Button>
+        <Button
+  size="sm"
+  className="shrink-0 text-xs sm:text-sm"
+  render={<Link href="/profile" />}
+>
+  View Profile
+</Button>
         </CardContent>
       </Card>
 
       {/* Posts Section */}
       <section className="space-y-4 sm:space-y-6">
-
         <div className="flex items-center justify-between">
           <h2 className="text-base font-semibold sm:text-lg">
             Latest Posts
@@ -93,7 +88,6 @@ export default function HomePage() {
             />
           ))}
         </div>
-
       </section>
     </div>
   );

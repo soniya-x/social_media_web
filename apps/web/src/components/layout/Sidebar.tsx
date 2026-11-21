@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -13,7 +14,6 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import UserAvatar from "@/components/shared/UserAvatar";
 import ThemeToggle from "@/components/shared/ThemeToggle";
@@ -32,60 +32,61 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="sticky top-0 flex h-screen w-[245px] shrink-0 flex-col border-r bg-background px-5 py-7">
-      <Link href="/home" className="mb-10 px-2">
-        <h1 className="text-3xl font-bold tracking-tight">
-          Socially<span className="text-primary">.</span>
+    <aside className="sticky top-0 h-screen w-[245px] border-r px-5 py-7">
+
+      <Link href="/home">
+        <h1 className="mb-10 text-3xl font-bold">
+          SocialGram<span className="text-primary">.</span>
         </h1>
       </Link>
 
-      <nav className="flex flex-1 flex-col gap-2">
+      {/* Navigation */}
+      <nav className="flex flex-col gap-3">
         {navigation.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href;
 
           return (
-            <Button
+            <Link
               key={item.label}
-              asChild
-              variant="ghost"
-              className={`h-12 justify-start gap-4 px-3 text-[15px] ${
-                active ? "bg-muted font-semibold" : "font-normal"
+              href={item.href}
+              className={`flex items-center gap-4 rounded-lg px-3 py-3 hover:bg-muted ${
+                active ? "bg-muted font-semibold" : ""
               }`}
             >
-              <Link href={item.href}>
-                <Icon
-                  size={22}
-                  strokeWidth={active ? 2.5 : 1.8}
-                />
-                {item.label}
-              </Link>
-            </Button>
+              <Icon size={22} />
+              <span>{item.label}</span>
+            </Link>
           );
         })}
       </nav>
 
-      <Separator className="my-4" />
+      <Separator className="my-9" />
 
-      <div className="flex items-center gap-3 rounded-lg p-2">
-        <UserAvatar name="Soniya Patidar" className="h-10 w-10" />
+      {/* Profile */}
+      <div className="flex items-center gap-3">
+        <UserAvatar
+          name="Soniya Patidar"
+          className="h-10 w-10"
+        />
 
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold">
-            Soniya Patidar
-          </p>
-          <p className="truncate text-xs text-muted-foreground">
-            @soniya
-          </p>
+        <div>
+          <p className="text-sm font-semibold">Soniya Patidar</p>
+          <p className="text-xs text-muted-foreground">@soniya</p>
         </div>
 
         <ThemeToggle />
       </div>
 
-      <Button variant="ghost" className="mt-3 justify-start gap-3">
-        <MoreHorizontal size={21} />
-        More
-      </Button>
+      {/* More */}
+      <Link
+        href="/settings"
+        className="mt-5 flex items-center gap-3 rounded-lg px-3 py-3 hover:bg-muted"
+      >
+        <MoreHorizontal size={22} />
+        <span>More</span>
+      </Link>
+
     </aside>
   );
 }
