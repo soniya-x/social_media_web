@@ -10,7 +10,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 
-import { Button,UserAvatar } from "@/domains/application";
+import { Button,UserAvatar } from "$domains/application";
 
 const conversations = [
   {

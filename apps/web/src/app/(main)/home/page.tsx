@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { Button,Card, CardContent,PostCard,UserAvatar, } from "@/domains/application";
+import { Button,Card, CardContent,PostCard,UserAvatar, } from "$domains/application";
 import { posts } from "@/features/feed/data/posts";
 
 export default function HomePage() {

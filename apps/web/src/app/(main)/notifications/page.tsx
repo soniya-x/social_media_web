@@ -9,7 +9,7 @@ import {
   CheckCheck,
 } from "lucide-react";
 
-import { Button,UserAvatar } from "@/domains/application";
+import { Button,UserAvatar } from "$domains/application";
 
 import { notifications as initialNotifications } from "@/features/notifications/data/notifications";
 
