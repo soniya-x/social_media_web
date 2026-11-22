@@ -1,43 +1,76 @@
 "use client";
 
 import { useState } from "react";
-import type { ChangeEvent, FormEvent } from "react";
+import type { FormEvent } from "react";
 import Link from "next/link";
-
-interface LoginFormData {
-  email: string;
-  password: string;
-}
+import { useRouter } from "next/navigation";
+import api from "@/lib/axios";
+import { LoginFormData } from "@/types/auth/auth.types";
+import{ Input,Button }from "$domains/application";
 
 export default function LoginPage() {
-  const [formData, setFormData] = useState<LoginFormData>({
-    email: "",
-    password: "",
-  });
+  const router = useRouter();
+  // const [formData, setFormData] = useState<LoginFormData>({
+  //   email: "",
+  //   password: "",
+  // });
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  // const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     [name]: value,
+  //   }));
+  // };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
 
-    console.log("Login Data:", formData);
-    alert("Login form submitted!");
+    //exctract value directly from the form
+    const formData = new FormData(e.currentTarget);
+
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    //create login data
+    const loginData: LoginFormData = {
+      email,
+      password,
+    };
+
+    try {
+      setLoading(true);
+      const response = await api.post("/users/login", loginData);
+      const { token, user } = response.data;
+
+      //store jwt tokena and user information
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      alert("Login successful!");
+
+      //redirect to home page
+      router.push("/home");
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message || "Login failed. Please try again.";
+
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md">
-
         {/* Login Card */}
         <div className="bg-white border border-gray-200 rounded-lg px-8 py-10">
-
           <h1 className="text-4xl font-bold text-center mb-3 tracking-tight">
             SocialGram
           </h1>
@@ -47,37 +80,37 @@ export default function LoginPage() {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-
             {/* Email */}
-            <input
+            <Input
               type="email"
               name="email"
               placeholder="Email address"
-              value={formData.email}
-              onChange={handleChange}
               required
-              className="w-full bg-gray-50 border border-gray-300 rounded px-3 py-3 text-sm outline-none focus:border-gray-500"
             />
 
-            {/* Password */}
-            <input
+            <Input
               type="password"
               name="password"
               placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
               required
-              className="w-full bg-gray-50 border border-gray-300 rounded px-3 py-3 text-sm outline-none focus:border-gray-500"
             />
 
             {/* Login Button */}
-            <button
+            {/* <button
               type="submit"
+              disabled={loading}
               className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition duration-200"
             >
-              Log In
-            </button>
+              {loading ? "Logging in..." : "Log In"}
+            </button> */}
+            <Button type="submit" disabled={loading}>
+              {loading ? "Logging in..." : "Log In"}
+            </Button>
 
+            {/* Error Message */}
+            {error && (
+              <p className="text-red-500 text-sm text-center mb-4">{error}</p>
+            )}
           </form>
 
           <div className="flex items-center gap-4 my-6">
@@ -94,22 +127,17 @@ export default function LoginPage() {
               Forgot password?
             </Link>
           </div>
-
         </div>
 
         {/* Registration Link */}
         <div className="bg-white border border-gray-200 rounded-lg mt-3 py-5 text-center">
           <p className="text-sm text-gray-700">
             Don't have an account?{" "}
-            <Link
-              href="/register"
-              className="text-blue-500 font-semibold"
-            >
+            <Link href="/register" className="text-blue-500 font-semibold">
               Sign up
             </Link>
           </p>
         </div>
-
       </div>
     </div>
   );

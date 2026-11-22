@@ -1,0 +1,28 @@
+"use client"
+import { useEffect,useState } from "react"
+import { getUserProfile } from "@/services/user.service"
+import { User } from "@/types/main/user.types";
+
+
+export default function useUserProfile(){
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(()=>{
+    const fetchProfile=async()=>{
+        try{
+            const data=await getUserProfile();
+            setUser(data);
+
+        }catch(error){
+            setError("Failed to fetch user profile")
+        } finally{
+            setLoading(false)
+        }
+    };
+    fetchProfile();
+  },[]);
+  return {user,loading,error}
+
+}
