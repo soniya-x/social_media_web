@@ -1,29 +1,31 @@
+import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
+import connectDB from "./config/db";
+import userRoutes from "./routes/user.routes"
+
 dotenv.config();
 
-import { createServer } from "http";
-import { Server } from "socket.io";
-import app from "./app";
+const app = express();
 
-const PORT = process.env.PORT || 6000;
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-const httpServer = createServer(app);
+// Database connection
+connectDB();
 
-const io = new Server(httpServer, {
-  cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
-    credentials: true
-  }
+// API Routes
+app.use("/api/users", userRoutes);
+
+app.get("/", (req, res) => {
+  res.status(200).send("SocialGram API is running!");
 });
 
-io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
 
-  socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
-  });
-});
+const PORT = process.env.PORT || 5001;
 
-httpServer.listen(PORT, () => {
-  console.log(`API running on port ${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
