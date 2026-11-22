@@ -1,6 +1,7 @@
 import Image from "next/image";
 
-import ProfileHeader from "@/components/shared/ProfileHeader";
+import { ProfileHeader } from "@/domains/application";
+
 import { profilePosts } from "@/features/profile/data/profilePost";
 
 export default function ProfilePage() {

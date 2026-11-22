@@ -3,12 +3,18 @@
 import { useEffect, useState } from "react";
 import { ImagePlus, MapPin, X } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 
-import UserAvatar from "@/components/shared/UserAvatar";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Textarea,
+  Input,
+  PostCard,
+  UserAvatar,
+} from "@/domains/application";
 
 export default function CreatePostPage() {
   const [image, setImage] = useState<File | null>(null);

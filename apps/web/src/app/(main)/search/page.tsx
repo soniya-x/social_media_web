@@ -3,7 +3,8 @@
 
 import { useState } from "react";
 import { Search, X, Clock } from "lucide-react";
-import UserAvatar from "@/components/shared/UserAvatar";
+import { UserAvatar } from "@/domains/application";
+
 
 const recentUsers = [
   { name: "Rahul Sharma", username: "@rahul_dev" },

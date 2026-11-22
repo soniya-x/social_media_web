@@ -9,8 +9,8 @@ import {
   CheckCheck,
 } from "lucide-react";
 
-import UserAvatar from "@/components/shared/UserAvatar";
-import { Button } from "@/components/ui/button";
+import { Button,UserAvatar } from "@/domains/application";
+
 import { notifications as initialNotifications } from "@/features/notifications/data/notifications";
 
 type FilterType = "all" | "unread";
