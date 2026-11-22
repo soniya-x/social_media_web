@@ -4,9 +4,11 @@
 import Link from "next/link";
 import { Button,Card, CardContent,PostCard,UserAvatar, } from "$domains/application";
 import { posts } from "@/features/feed/data/posts";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function HomePage() {
   return (
+    <ProtectedRoute>
     <div
       className="
         mx-auto w-full max-w-[620px] space-y-5 px-3
@@ -45,14 +47,14 @@ export default function HomePage() {
               Share your thoughts with everyone.
             </p>
           </div>
-
-        <Button
-  size="sm"
-  className="shrink-0 text-xs sm:text-sm"
-  render={<Link href="/profile" />}
->
-  View Profile
-</Button>
+          <Button
+            size="sm"
+            nativeButton={false}
+            className="shrink-0 text-xs sm:text-sm"
+            render={<Link href="/profile" />}
+          >
+            View Profile
+          </Button>
         </CardContent>
       </Card>
 
@@ -85,6 +87,8 @@ export default function HomePage() {
         </div>
       </section>
     </div>
+
+    </ProtectedRoute>
   );
 }
 

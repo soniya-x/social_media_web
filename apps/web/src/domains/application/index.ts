@@ -1,5 +1,7 @@
 export * from './components/layout/Sidebar';
 export * from  './components/layout/RightSidebar';
+export * from  './components/layout/GuestRoute';
+export * from  './components/layout/ProtectedRoute';
 export * from "./components/ui/avatar";
 export * from "./components/ui/button";
 export * from "./components/ui/card";
@@ -12,4 +14,5 @@ export * from "./components/shared/PostCard";
 export * from "./components/shared/ProfileHeader";
 export * from "./components/shared/ThemeToggle";
 export * from "./components/shared/UserAvatar";
+
 
