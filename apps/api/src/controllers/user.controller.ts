@@ -101,34 +101,34 @@ export const getUserProfile = async (
 };
 
 //update the logged -in  user's profile
-export const updateUserProfile=async(
-    req:Request,
-    res:Response,
 
-): Promise<void> =>{
-    try{
-        //get the logged-in user's id from authentication middleware
-        const userId=res.locals.userId;
+export const updateUserProfile = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    // Get the logged-in user's ID
+    const userId = res.locals.userId;
 
-        //get editable  profile field from the frontend
-        const {fullName,username,bio,profileImage}=req.body;
+    // Get editable profile fields
+    const { fullName, username, bio, profileImage } = req.body;
 
-        //check wheather atleast one field in provided
-        if(
-            fullName===undefined && 
-            username===undefined &&
-            bio=== undefined &&
-            profileImage===undefined
-        ){
-            res.status(400).json({
+    // Check whether at least one field is provided
+    if (
+      fullName === undefined &&
+      username === undefined &&
+      bio === undefined &&
+      profileImage === undefined
+    ) {
+      res.status(400).json({
         success: false,
         message: "Please provide at least one field to update",
       });
       return;
+    }
 
-        }
-        //find the logged-in user
-        const user=await User.findById(userId);
+    // Find the logged-in user
+    const user = await User.findById(userId);
 
     if (!user) {
       res.status(404).json({
@@ -138,7 +138,7 @@ export const updateUserProfile=async(
       return;
     }
 
-     // Check whether the new username belongs to another user
+    // Check whether the new username belongs to another user
     if (username !== undefined && username !== user.username) {
       const existingUser = await User.findOne({ username });
 
@@ -151,13 +151,95 @@ export const updateUserProfile=async(
       }
     }
 
-    // update only the field provided by the frontend
-    if(fullName !==undefined) user.fullName=fullName;
-    if(username!==undefined) user.username=username;
-    if(bio!==undefined)
+    // Update only the fields provided by the frontend
+    if (fullName !== undefined) user.fullName = fullName;
+    if (username !== undefined) user.username = username;
+    if (bio !== undefined) user.bio = bio;
+    if (profileImage !== undefined) user.profileImage = profileImage;
+
+    // Save updated user
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      user,
+    });
+
+  } catch (error) {
+    console.error("Update profile error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+// export const updateUserProfile = async (
+//   req: Request,
+//   res: Response,
+
+// ): Promise<void> => {
+//   try {
+//     //get the logged-in user's id from authentication middleware
+//     const userId = res.locals.userId;
+
+//     //get editable  profile field from the frontend
+//     const { fullName, username, bio, profileImage } = req.body;
+
+//     //check wheather atleast one field in provided
+//     if (
+//       fullName === undefined &&
+//       username === undefined &&
+//       bio === undefined &&
+//       profileImage === undefined
+//     ) {
+//       res.status(400).json({
+//         success: false,
+//         message: "Please provide at least one field to update",
+//       });
+//       return;
+
+//     }
+//     //find the logged-in user
+//     const user = await User.findById(userId);
+
+//     if (!user) {
+//       res.status(404).json({
+//         success: false,
+//         message: "User not found",
+//       });
+//       return;
+//     }
+
+//     // Check whether the new username belongs to another user
+//     if (username !== undefined && username !== user.username) {
+//       const existingUser = await User.findOne({ username });
+
+//       if (existingUser) {
+//         res.status(409).json({
+//           success: false,
+//           message: "Username already exists",
+//         });
+//         return;
+//       }
+//     }
+
+//     // update only the field provided by the frontend
+//     if (fullName !== undefined) user.fullName = fullName;
+//     if (username !== undefined) user.username = username;
+//     if (bio !== undefined)
 
 
-    }
-}
+//     } catch (error) {
+//     console.log("Registration error:", error);
+
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal server error",
+//     });
+//   }
+// }
 
 
