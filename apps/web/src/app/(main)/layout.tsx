@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 
-import {Sidebar,RightSidebar } from "@/domains/application";
+import {Sidebar,RightSidebar } from "$domains/application";
 
 
 export default function MainLayout({

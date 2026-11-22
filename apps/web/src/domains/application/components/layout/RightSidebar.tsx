@@ -1,4 +1,4 @@
-import { Button,UserAvatar } from "@/domains/application";
+import { Button,UserAvatar } from "$domains/application";
 
 const suggestions = [
   { name: "Rahul Sharma", username: "@rahul_dev" },

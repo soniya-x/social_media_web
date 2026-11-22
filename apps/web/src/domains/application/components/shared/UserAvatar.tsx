@@ -2,7 +2,7 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/domains/application";
+} from "$domains/application";
 
 interface UserAvatarProps {
   name: string;

@@ -14,7 +14,7 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 
-import { Separator,UserAvatar,ThemeToggle } from "@/domains/application";
+import { Separator,UserAvatar,ThemeToggle } from "$domains/application";
 
 
 const navigation = [
