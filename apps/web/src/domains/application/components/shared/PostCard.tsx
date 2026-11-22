@@ -11,10 +11,12 @@ import {
   Card,
   CardContent,
   CardHeader,
-} from "@/components/ui/card";
+  Button,
+  UserAvatar,
+} from "@/domains/application";
 
-import { Button } from "@/components/ui/button";
-import UserAvatar from "@/components/shared/UserAvatar";
+// import { Button } from "@/domains/application";
+// import UserAvatar from "@/domains/application";
 
 interface PostCardProps {
   username: string;
@@ -26,7 +28,7 @@ interface PostCardProps {
   image: string;
 }
 
-export default function PostCard({
+export function PostCard({
   username,
   name,
   caption,

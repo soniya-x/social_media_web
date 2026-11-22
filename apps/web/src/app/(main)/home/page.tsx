@@ -2,12 +2,7 @@
 "use client";
 
 import Link from "next/link";
-
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-
-import UserAvatar from "@/components/shared/UserAvatar";
-import PostCard from "@/components/shared/PostCard";
+import { Button,Card, CardContent,PostCard,UserAvatar, } from "@/domains/application";
 import { posts } from "@/features/feed/data/posts";
 
 export default function HomePage() {
@@ -92,3 +87,5 @@ export default function HomePage() {
     </div>
   );
 }
+
+

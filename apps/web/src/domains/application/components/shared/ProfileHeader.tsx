@@ -1,6 +1,5 @@
 
-import { Button } from "@/components/ui/button";
-import UserAvatar from "@/components/shared/UserAvatar";
+import { Button,UserAvatar } from "@/domains/application";
 
 interface ProfileHeaderProps {
   name: string;
@@ -11,7 +10,7 @@ interface ProfileHeaderProps {
   following: number;
 }
 
-export default function ProfileHeader({
+export function ProfileHeader({
   name,
   username,
   bio,

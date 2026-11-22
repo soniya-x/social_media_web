@@ -14,9 +14,8 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 
-import { Separator } from "@/components/ui/separator";
-import UserAvatar from "@/components/shared/UserAvatar";
-import ThemeToggle from "@/components/shared/ThemeToggle";
+import { Separator,UserAvatar,ThemeToggle } from "@/domains/application";
+
 
 const navigation = [
   { label: "Home", href: "/home", icon: Home },
@@ -28,7 +27,7 @@ const navigation = [
   { label: "Settings", href: "/settings", icon: Settings },
 ];
 
-export default function Sidebar() {
+export function Sidebar() {
   const pathname = usePathname();
 
   return (

@@ -2,7 +2,7 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/avatar";
+} from "@/domains/application";
 
 interface UserAvatarProps {
   name: string;
@@ -10,7 +10,7 @@ interface UserAvatarProps {
   className?: string;
 }
 
-export default function UserAvatar({
+export function UserAvatar({
   name,
   image,
   className,

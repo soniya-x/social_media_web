@@ -10,8 +10,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 
-import UserAvatar from "@/components/shared/UserAvatar";
-import { Button } from "@/components/ui/button";
+import { Button,UserAvatar } from "@/domains/application";
 
 const conversations = [
   {

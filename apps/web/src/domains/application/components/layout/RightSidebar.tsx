@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import UserAvatar from "@/components/shared/UserAvatar";
+import { Button,UserAvatar } from "@/domains/application";
 
 const suggestions = [
   { name: "Rahul Sharma", username: "@rahul_dev" },
@@ -7,7 +6,7 @@ const suggestions = [
   { name: "Aman Patel", username: "@aman_design" },
 ];
 
-export default function RightSidebar() {
+export function RightSidebar() {
   return (
     <aside className="sticky top-0 hidden h-screen w-[300px] shrink-0 py-10 xl:block">
       <div className="mb-8">
