@@ -38,54 +38,42 @@ const conversations = [
 ];
 
 const sampleMessages = [
-  {
-    id: 1,
-    text: "Hey! How are you?",
-    sender: "other",
-  },
-  {
-    id: 2,
-    text: "I'm good. What about you?",
-    sender: "me",
-  },
-  {
-    id: 3,
-    text: "I'm also doing great!",
-    sender: "other",
-  },
+  { id: 1, text: "Hey! How are you?", sender: "other" },
+  { id: 2, text: "I'm good. What about you?", sender: "me" },
+  { id: 3, text: "I'm also doing great!", sender: "other" },
 ];
 
 export default function MessagesPage() {
   const [selectedUser, setSelectedUser] = useState(conversations[0]);
   const [message, setMessage] = useState("");
+  const [search, setSearch] = useState("");
   const [showChat, setShowChat] = useState(false);
+
+  const filteredConversations = conversations.filter((user) =>
+    user.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="mx-auto flex h-[calc(100dvh-48px)] min-h-[450px] max-w-[1100px] overflow-hidden rounded-lg border">
 
       {/* Conversation List */}
       <div
-        className={`
-          w-full shrink-0 flex-col
-          md:flex md:w-[300px]
-          lg:w-[350px]
-          border-r
-          ${showChat ? "hidden" : "flex"}
-        `}
+        className={`w-full shrink-0 flex-col border-r md:flex md:w-[300px] lg:w-[350px] ${
+          showChat ? "hidden" : "flex"
+        }`}
       >
         {/* Header */}
         <div className="border-b p-4 sm:p-5">
           <h1 className="text-xl font-bold">Messages</h1>
 
           <div className="mt-4 flex items-center gap-2 rounded-lg bg-muted px-3">
-            <Search
-              size={18}
-              className="shrink-0 text-muted-foreground"
-            />
+            <Search size={18} className="shrink-0 text-muted-foreground" />
 
             <input
               type="text"
               placeholder="Search conversations"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               className="h-10 min-w-0 w-full bg-transparent text-sm outline-none"
             />
           </div>
@@ -93,27 +81,18 @@ export default function MessagesPage() {
 
         {/* Conversation Items */}
         <div className="flex-1 overflow-y-auto p-2 sm:p-3">
-          <h2 className="mb-3 px-2 text-sm font-semibold">
-            Messages
-          </h2>
-
-          {conversations.map((user) => (
+          {filteredConversations.map((user) => (
             <button
               key={user.id}
               onClick={() => {
                 setSelectedUser(user);
                 setShowChat(true);
               }}
-              className={`
-                flex w-full items-center gap-3
-                rounded-lg p-3 text-left
-                transition-colors
-                ${
-                  selectedUser.id === user.id
-                    ? "bg-muted"
-                    : "hover:bg-muted/60"
-                }
-              `}
+              className={`flex w-full items-center gap-3 rounded-lg p-3 text-left transition-colors ${
+                selectedUser.id === user.id
+                  ? "bg-muted"
+                  : "hover:bg-muted/60"
+              }`}
             >
               <UserAvatar
                 name={user.name}
@@ -135,22 +114,25 @@ export default function MessagesPage() {
               </span>
             </button>
           ))}
+
+          {filteredConversations.length === 0 && (
+            <p className="p-4 text-center text-sm text-muted-foreground">
+              No conversations found.
+            </p>
+          )}
         </div>
       </div>
 
       {/* Chat Window */}
       <div
-        className={`
-          min-w-0 flex-1 flex-col
-          ${showChat ? "flex" : "hidden md:flex"}
-        `}
+        className={`min-w-0 flex-1 flex-col ${
+          showChat ? "flex" : "hidden md:flex"
+        }`}
       >
         {/* Chat Header */}
         <div className="flex items-center justify-between gap-2 border-b p-3 sm:p-4">
-
           <div className="flex min-w-0 items-center gap-2 sm:gap-3">
 
-            {/* Back Button: Mobile Only */}
             <Button
               variant="ghost"
               size="icon"
@@ -194,22 +176,15 @@ export default function MessagesPage() {
             <div
               key={msg.id}
               className={`flex ${
-                msg.sender === "me"
-                  ? "justify-end"
-                  : "justify-start"
+                msg.sender === "me" ? "justify-end" : "justify-start"
               }`}
             >
               <div
-                className={`
-                  max-w-[85%] break-words rounded-2xl
-                  px-3 py-2 text-sm
-                  sm:max-w-[70%] sm:px-4 sm:py-3
-                  ${
-                    msg.sender === "me"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted"
-                  }
-                `}
+                className={`max-w-[85%] break-words rounded-2xl px-3 py-2 text-sm sm:max-w-[70%] sm:px-4 sm:py-3 ${
+                  msg.sender === "me"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted"
+                }`}
               >
                 {msg.text}
               </div>
