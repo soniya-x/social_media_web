@@ -103,7 +103,7 @@ export default function LoginPage() {
             >
               {loading ? "Logging in..." : "Log In"}
             </button> */}
-            <Button type="submit" loading={loading}>
+            <Button type="submit" disabled={loading}>
               {loading ? "Logging in..." : "Log In"}
             </Button>
 
