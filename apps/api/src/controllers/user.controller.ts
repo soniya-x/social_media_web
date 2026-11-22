@@ -101,58 +101,63 @@ export const getUserProfile = async (
 };
 
 //update the logged -in  user's profile
-// export const updateUserProfile=async(
-//     req:Request,
-//     res:Response,
+export const updateUserProfile=async(
+    req:Request,
+    res:Response,
 
-// ): Promise<void> =>{
-//     try{
-//         //get the logged-in user's id from authentication middleware
-//         const userId=res.locals.userId;
+): Promise<void> =>{
+    try{
+        //get the logged-in user's id from authentication middleware
+        const userId=res.locals.userId;
 
-//         //get editable  profile field from the frontend
-//         const {fullName,username,bio,profileImage}=req.body;
+        //get editable  profile field from the frontend
+        const {fullName,username,bio,profileImage}=req.body;
 
-//         //check wheather atleast one field in provided
-//         if(
-//             fullName===undefined && 
-//             username===undefined &&
-//             bio=== undefined &&
-//             profileImage===undefined
-//         ){
-//             res.status(400).json({
-//         success: false,
-//         message: "Please provide at least one field to update",
-//       });
-//       return;
+        //check wheather atleast one field in provided
+        if(
+            fullName===undefined && 
+            username===undefined &&
+            bio=== undefined &&
+            profileImage===undefined
+        ){
+            res.status(400).json({
+        success: false,
+        message: "Please provide at least one field to update",
+      });
+      return;
 
-//         }
-//         //find the logged-i user
-//         const user=await User.findById(userId);
+        }
+        //find the logged-in user
+        const user=await User.findById(userId);
 
-//     if (!user) {
-//       res.status(404).json({
-//         success: false,
-//         message: "User not found",
-//       });
-//       return;
-//     }
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+      return;
+    }
 
-//      // Check whether the new username belongs to another user
-//     if (username !== undefined && username !== user.username) {
-//       const existingUser = await User.findOne({ username });
+     // Check whether the new username belongs to another user
+    if (username !== undefined && username !== user.username) {
+      const existingUser = await User.findOne({ username });
 
-//       if (existingUser) {
-//         res.status(409).json({
-//           success: false,
-//           message: "Username already exists",
-//         });
-//         return;
-//       }
-//     }
+      if (existingUser) {
+        res.status(409).json({
+          success: false,
+          message: "Username already exists",
+        });
+        return;
+      }
+    }
+
+    // update only the field provided by the frontend
+    if(fullName !==undefined) user.fullName=fullName;
+    if(username!==undefined) user.username=username;
+    if(bio!==undefined)
 
 
-//     }
-// }
+    }
+}
 
 
