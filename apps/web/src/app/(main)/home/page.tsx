@@ -1,11 +1,21 @@
-
 "use client";
 
 import Link from "next/link";
-import { Button, Card, CardContent, PostCard, UserAvatar, ProtectedRoute } from "@/domains/application";
+import {
+  Button,
+  Card,
+  CardContent,
+  PostCard,
+  UserAvatar,
+  ProtectedRoute,
+  useAppSelector,
+} from "@/domains/application";
 import { posts } from "@/features/feed/data/posts";
 
 export default function HomePage() {
+  const { user,token } = useAppSelector((state) => state.user);
+
+  console.log("user,token ====>", user,token);
   return (
     <ProtectedRoute>
       <div
@@ -17,9 +27,7 @@ export default function HomePage() {
         {/* Page Heading */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-xl font-bold sm:text-2xl">
-              Home
-            </h1>
+            <h1 className="text-xl font-bold sm:text-2xl">Home</h1>
 
             <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
               Stay connected with your community.
@@ -29,9 +37,7 @@ export default function HomePage() {
 
         {/* Create Post Section */}
         <Card>
-          <CardContent
-            className="flex items-center gap-2 p-3 sm:gap-3 sm:p-4"
-          >
+          <CardContent className="flex items-center gap-2 p-3 sm:gap-3 sm:p-4">
             <UserAvatar
               name="Soniya Patidar"
               className="h-9 w-9 shrink-0 sm:h-11 sm:w-11"
@@ -60,9 +66,7 @@ export default function HomePage() {
         {/* Posts Section */}
         <section className="space-y-4 sm:space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold sm:text-lg">
-              Latest Posts
-            </h2>
+            <h2 className="text-base font-semibold sm:text-lg">Latest Posts</h2>
 
             <Button variant="ghost" size="sm">
               Recent
@@ -86,9 +90,6 @@ export default function HomePage() {
           </div>
         </section>
       </div>
-
     </ProtectedRoute>
   );
 }
-
-
