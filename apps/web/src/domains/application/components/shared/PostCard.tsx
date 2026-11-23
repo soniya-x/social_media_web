@@ -13,10 +13,10 @@ import {
   CardHeader,
   Button,
   UserAvatar,
-} from "@/domains/application";
+} from "$domains/application";
 
-// import { Button } from "@/domains/application";
-// import UserAvatar from "@/domains/application";
+// import { Button } from "$domains/application";
+// import UserAvatar from "$domains/application";
 
 interface PostCardProps {
   username: string;

@@ -60,9 +60,8 @@ export function Sidebar() {
             <Link
               key={item.label}
               href={item.href}
-              className={`flex items-center gap-4 rounded-lg px-3 py-3 hover:bg-muted ${
-                active ? "bg-muted font-semibold" : ""
-              }`}
+              className={`flex items-center gap-4 rounded-lg px-3 py-3 hover:bg-muted ${active ? "bg-muted font-semibold" : ""
+                }`}
             >
               <Icon size={22} />
               <span>{item.label}</span>

@@ -1,5 +1,6 @@
 "use client";
 
+<<<<<<< HEAD
 import { useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
@@ -63,6 +64,50 @@ export default function LoginPage() {
       setError(message);
     } finally {
       setLoading(false);
+=======
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import {
+  Input,
+  Button,
+  useAppDispatch,
+  useAppSelector,
+} from "$domains/application";
+
+import { loginSchema, LoginFormData, loginAction } from "$domains/login";
+
+export default function LoginPage() {
+  const router = useRouter();
+
+  const dispatch = useAppDispatch();
+
+  // Get authentication state from Redux
+  const { isLoading, error } = useAppSelector((state) => state.user);
+
+  // React Hook Form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    mode: "onBlur",
+  });
+
+  // Handle Login
+  const onSubmit = async (loginData: LoginFormData) => {
+    try {
+      await dispatch(loginAction(loginData)).unwrap();
+
+      // Redirect after successful login
+      router.push("/home");
+    } catch {
+      // Error is already handled by Redux
+>>>>>>> origin/feat/form-implementation-and-redux-setup
     }
   };
 
@@ -79,6 +124,7 @@ export default function LoginPage() {
             Log in to connect with your friends.
           </p>
 
+<<<<<<< HEAD
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email */}
             <Input
@@ -111,11 +157,59 @@ export default function LoginPage() {
             {error && (
               <p className="text-red-500 text-sm text-center mb-4">{error}</p>
             )}
+=======
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4"
+            noValidate
+          >
+            {/* Email */}
+            <div>
+              <Input
+                type="email"
+                placeholder="Email address"
+                {...register("email")}
+              />
+
+              {errors.email && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div>
+              <Input
+                type="password"
+                placeholder="Password"
+                {...register("password")}
+              />
+
+              {errors.password && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            {/* API Error */}
+            {error && (
+              <p className="text-red-500 text-sm text-center">{error}</p>
+            )}
+
+            {/* Submit Button */}
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Logging in..." : "Log In"}
+            </Button>
+>>>>>>> origin/feat/form-implementation-and-redux-setup
           </form>
 
           <div className="flex items-center gap-4 my-6">
             <div className="flex-1 border-t border-gray-200" />
+
             <span className="text-gray-400 text-xs font-semibold">OR</span>
+
             <div className="flex-1 border-t border-gray-200" />
           </div>
 

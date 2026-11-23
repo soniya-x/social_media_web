@@ -1,19 +1,39 @@
 "use client";
 
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+<<<<<<< HEAD
 import api from "@/lib/axios";
 import { RegisterFormData } from "@/types/auth/auth.types";
 import{ Input,Button }from "$domains/application";
+=======
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import api from "@/lib/axios";
+
+import { Input, Button } from "$domains/application";
+
+import {
+  registerSchema,
+  RegisterFormData,
+} from "$domains/register";
+>>>>>>> origin/feat/form-implementation-and-redux-setup
 
 
 export default function RegisterPage() {
   const router = useRouter();
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/feat/form-implementation-and-redux-setup
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+<<<<<<< HEAD
   // Handle form submission
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -60,6 +80,54 @@ export default function RegisterPage() {
     } finally {
       setLoading(false);
     }
+=======
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    mode: "onBlur",
+  });
+
+  // Handle form submission
+  const onSubmit = async (registerData: RegisterFormData) => {
+    setError("");
+    setSuccess("");
+
+    try {
+      setLoading(true);
+
+      const response = await api.post(
+        "/users/register",
+        registerData
+      );
+
+      setSuccess(
+        response.data.message || "Registration successful!"
+      );
+
+      setTimeout(() => {
+        router.push("/login");
+      }, 1500);
+
+    } catch (error: unknown) {
+      const message =
+        (error as {
+          response?: {
+            data?: {
+              message?: string;
+            };
+          };
+        }).response?.data?.message ||
+        "Registration failed. Please try again.";
+
+      setError(message);
+
+    } finally {
+      setLoading(false);
+    }
+>>>>>>> origin/feat/form-implementation-and-redux-setup
   };
 
   return (
@@ -78,11 +146,18 @@ export default function RegisterPage() {
 
           {/* Error Message */}
           {error && (
+<<<<<<< HEAD
             <p className="text-red-500 text-sm text-center mb-3">{error}</p>
+=======
+            <p className="text-red-500 text-sm text-center mb-3">
+              {error}
+            </p>
+>>>>>>> origin/feat/form-implementation-and-redux-setup
           )}
 
           {/* Success Message */}
           {success && (
+<<<<<<< HEAD
             <p className="text-green-600 text-sm text-center mb-3">{success}</p>
           )}
 
@@ -135,6 +210,100 @@ export default function RegisterPage() {
             >
               {loading ? "Creating Account..." : "Sign Up"}
             </button> */}
+=======
+            <p className="text-green-600 text-sm text-center mb-3">
+              {success}
+            </p>
+          )}
+
+          {/* Registration Form */}
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-3"
+            noValidate
+          >
+
+            {/* Full Name */}
+            <div>
+              <Input
+                type="text"
+                placeholder="Full Name"
+                {...register("fullName")}
+              />
+
+              {errors.fullName && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.fullName.message}
+                </p>
+              )}
+            </div>
+
+            {/* Username */}
+            <div>
+              <Input
+                type="text"
+                placeholder="Username"
+                {...register("username")}
+              />
+
+              {errors.username && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.username.message}
+                </p>
+              )}
+            </div>
+
+            {/* Email */}
+            <div>
+              <Input
+                type="email"
+                placeholder="Email Address"
+                {...register("email")}
+              />
+
+              {errors.email && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div>
+              <Input
+                type="password"
+                placeholder="Password"
+                {...register("password")}
+              />
+
+              {errors.password && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <Input
+                type="password"
+                placeholder="Confirm Password"
+                {...register("confirmPassword")}
+              />
+
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.confirmPassword.message}
+                </p>
+              )}
+            </div>
+
+            {/* Submit Button */}
+            <Button type="submit" disabled={loading}>
+              {loading ? "Creating Account..." : "Sign Up"}
+            </Button>
+
+>>>>>>> origin/feat/form-implementation-and-redux-setup
           </form>
 
           <p className="text-xs text-gray-500 text-center mt-5 leading-5">
@@ -147,7 +316,14 @@ export default function RegisterPage() {
         <div className="bg-white border border-gray-200 rounded-lg mt-3 py-5 text-center">
           <p className="text-sm text-gray-700">
             Already have an account?{" "}
+<<<<<<< HEAD
             <Link href="/login" className="text-blue-500 font-semibold">
+=======
+            <Link
+              href="/login"
+              className="text-blue-500 font-semibold"
+            >
+>>>>>>> origin/feat/form-implementation-and-redux-setup
               Log in
             </Link>
           </p>

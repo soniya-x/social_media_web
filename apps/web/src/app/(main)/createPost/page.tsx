@@ -13,7 +13,7 @@ import {
   Input,
   PostCard,
   UserAvatar,
-} from "@/domains/application";
+} from "$domains/application";
 
 export default function CreatePostPage() {
   const [image, setImage] = useState<File | null>(null);
