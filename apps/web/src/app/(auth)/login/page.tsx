@@ -1,68 +1,47 @@
 "use client";
 
-import { useState } from "react";
-import type { FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import api from "@/lib/axios";
-import { LoginFormData } from "@/types/auth/auth.types";
-import{ Input,Button }from "$domains/application";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import {
+  Input,
+  Button,
+  useAppDispatch,
+  useAppSelector,
+} from "$domains/application";
+
+import { loginSchema, LoginFormData, loginAction } from "$domains/login";
 
 export default function LoginPage() {
   const router = useRouter();
-  // const [formData, setFormData] = useState<LoginFormData>({
-  //   email: "",
-  //   password: "",
-  // });
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const dispatch = useAppDispatch();
 
-  // const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = e.target;
+  // Get authentication state from Redux
+  const { isLoading, error } = useAppSelector((state) => state.user);
 
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     [name]: value,
-  //   }));
-  // };
+  // React Hook Form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    mode: "onBlur",
+  });
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-
-    //exctract value directly from the form
-    const formData = new FormData(e.currentTarget);
-
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-
-    //create login data
-    const loginData: LoginFormData = {
-      email,
-      password,
-    };
-
+  // Handle Login
+  const onSubmit = async (loginData: LoginFormData) => {
     try {
-      setLoading(true);
-      const response = await api.post("/users/login", loginData);
-      const { token, user } = response.data;
+      await dispatch(loginAction(loginData)).unwrap();
 
-      //store jwt tokena and user information
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      alert("Login successful!");
-
-      //redirect to home page
+      // Redirect after successful login
       router.push("/home");
-    } catch (error: any) {
-      const message =
-        error.response?.data?.message || "Login failed. Please try again.";
-
-      setError(message);
-    } finally {
-      setLoading(false);
+    } catch {
+      // Error is already handled by Redux
     }
   };
 
@@ -79,43 +58,57 @@ export default function LoginPage() {
             Log in to connect with your friends.
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4"
+            noValidate
+          >
             {/* Email */}
-            <Input
-              type="email"
-              name="email"
-              placeholder="Email address"
-              required
-            />
+            <div>
+              <Input
+                type="email"
+                placeholder="Email address"
+                {...register("email")}
+              />
 
-            <Input
-              type="password"
-              name="password"
-              placeholder="Password"
-              required
-            />
+              {errors.email && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
 
-            {/* Login Button */}
-            {/* <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition duration-200"
-            >
-              {loading ? "Logging in..." : "Log In"}
-            </button> */}
-            <Button type="submit" disabled={loading}>
-              {loading ? "Logging in..." : "Log In"}
-            </Button>
+            {/* Password */}
+            <div>
+              <Input
+                type="password"
+                placeholder="Password"
+                {...register("password")}
+              />
 
-            {/* Error Message */}
+              {errors.password && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            {/* API Error */}
             {error && (
-              <p className="text-red-500 text-sm text-center mb-4">{error}</p>
+              <p className="text-red-500 text-sm text-center">{error}</p>
             )}
+
+            {/* Submit Button */}
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? "Logging in..." : "Log In"}
+            </Button>
           </form>
 
           <div className="flex items-center gap-4 my-6">
             <div className="flex-1 border-t border-gray-200" />
+
             <span className="text-gray-400 text-xs font-semibold">OR</span>
+
             <div className="flex-1 border-t border-gray-200" />
           </div>
 
