@@ -1,5 +1,5 @@
 
-import { Button,UserAvatar } from "@/domains/application";
+import { Button,UserAvatar } from "$domains/application";
 
 interface ProfileHeaderProps {
   name: string;

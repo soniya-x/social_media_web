@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { ProfileHeader } from "@/domains/application";
+import { ProfileHeader } from "$domains/application";
 
 import { profilePosts } from "@/features/profile/data/profilePost";
 

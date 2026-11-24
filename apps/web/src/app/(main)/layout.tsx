@@ -2,8 +2,7 @@
 
 import { usePathname } from "next/navigation";
 
-import {Sidebar,RightSidebar } from "@/domains/application";
-
+import { Sidebar, RightSidebar, ProtectedRoute } from "@/domains/application";
 
 export default function MainLayout({
   children,
@@ -12,18 +11,17 @@ export default function MainLayout({
 }) {
   const pathname = usePathname();
 
-  const hideRightSidebar =
-    pathname === "/messages" || pathname === "/create";
+  const hideRightSidebar = pathname === "/messages" || pathname === "/create";
 
   return (
-    <div className="flex min-h-screen">
-      <Sidebar />
+    <ProtectedRoute>
+      <div className="flex min-h-screen">
+        <Sidebar />
 
-      <main className="min-w-0 flex-1">
-        {children}
-      </main>
+        <main className="min-w-0 flex-1">{children}</main>
 
-      {!hideRightSidebar && <RightSidebar />}
-    </div>
+        {!hideRightSidebar && <RightSidebar />}
+      </div>
+    </ProtectedRoute>
   );
 }

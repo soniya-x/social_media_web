@@ -1,154 +1,198 @@
 
 "use client";
 
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-interface RegisterFormData {
-  fullName: string;
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import api from "@/lib/axios";
+
+import { Input, Button } from "$domains/application";
+
+import {
+  registerSchema,
+  RegisterFormData,
+} from "$domains/register";
 
 export default function RegisterPage() {
-  const [formData, setFormData] = useState<RegisterFormData>({
-    fullName: "",
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    mode: "onBlur",
   });
 
-  // Handle input changes
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  // Handle registration API request
+  const onSubmit = async (registerData: RegisterFormData) => {
+    setError("");
+    setSuccess("");
 
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+    try {
+      setLoading(true);
 
-  // Handle form submission
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+      const response = await api.post(
+        "/users/register",
+        registerData
+      );
 
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
-      return;
+      setSuccess(
+        response.data.message || "Registration successful!"
+      );
+
+      setTimeout(() => {
+        router.push("/login");
+      }, 1500);
+
+    } catch (error: unknown) {
+      const message =
+        (error as {
+          response?: {
+            data?: {
+              message?: string;
+            };
+          };
+        }).response?.data?.message ||
+        "Registration failed. Please try again.";
+
+      setError(message);
+
+    } finally {
+      setLoading(false);
     }
-
-    console.log("Registration Data:", formData);
-
-    alert("Registration form submitted!");
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8">
+    <main className="min-h-screen w-full flex items-center justify-center bg-background px-4 py-6 sm:px-6 sm:py-10">
 
-      <div className="w-full max-w-md">
+      {/* Main Container */}
+      <div className="w-full max-w-md mx-auto">
 
         {/* Registration Card */}
-        <div className="bg-white border border-gray-200 rounded-lg px-8 py-8">
+        <div className="rounded-xl border border-border bg-card text-card-foreground p-5 sm:p-7 md:p-8 shadow-sm">
 
           {/* Logo */}
-          <h1 className="text-4xl font-bold text-center mb-3 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-bold text-center mb-3 tracking-tight text-foreground">
             SocialGram
           </h1>
 
-          <p className="text-center text-gray-500 font-semibold text-base mb-6">
+          <p className="text-center text-muted-foreground font-medium text-sm sm:text-base mb-6">
             Sign up to see photos and posts from your friends.
           </p>
 
-          {/* Registration Form */}
-          <form onSubmit={handleSubmit} className="space-y-3">
-
-            <input
-              type="text"
-              name="fullName"
-              placeholder="Full Name"
-              value={formData.fullName}
-              onChange={handleChange}
-              required
-              className="w-full bg-gray-50 border border-gray-300 rounded px-3 py-3 text-sm outline-none focus:border-gray-500"
-            />
-
-            <input
-              type="text"
-              name="username"
-              placeholder="Username"
-              value={formData.username}
-              onChange={handleChange}
-              required
-              className="w-full bg-gray-50 border border-gray-300 rounded px-3 py-3 text-sm outline-none focus:border-gray-500"
-            />
-
-            <input
-              type="email"
-              name="email"
-              placeholder="Email Address"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full bg-gray-50 border border-gray-300 rounded px-3 py-3 text-sm outline-none focus:border-gray-500"
-            />
-
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className="w-full bg-gray-50 border border-gray-300 rounded px-3 py-3 text-sm outline-none focus:border-gray-500"
-            />
-
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              className="w-full bg-gray-50 border border-gray-300 rounded px-3 py-3 text-sm outline-none focus:border-gray-500"
-            />
-
-            <button
-              type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition duration-200"
+          {/* Error Message */}
+          {error && (
+            <p
+              role="alert"
+              className="text-destructive text-sm text-center mb-3 break-words"
             >
-              Sign Up
-            </button>
+              {error}
+            </p>
+          )}
 
+          {/* Success Message */}
+          {success && (
+            <p
+              role="status"
+              className="text-sm text-center mb-3 text-green-600 dark:text-green-400 break-words"
+            >
+              {success}
+            </p>
+          )}
+
+          {/* Registration Form */}
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4"
+            noValidate
+          >
+            {/* Full Name */}
+            <Input
+              type="text"
+              placeholder="Full Name"
+              autoComplete="name"
+              error={errors.fullName?.message}
+              {...register("fullName")}
+            />
+
+            {/* Username */}
+            <Input
+              type="text"
+              placeholder="Username"
+              autoComplete="username"
+              error={errors.username?.message}
+              {...register("username")}
+            />
+
+            {/* Email */}
+            <Input
+              type="email"
+              placeholder="Email Address"
+              autoComplete="email"
+              error={errors.email?.message}
+              {...register("email")}
+            />
+
+            {/* Password */}
+            <Input
+              type="password"
+              placeholder="Password"
+              autoComplete="new-password"
+              error={errors.password?.message}
+              {...register("password")}
+            />
+
+            {/* Confirm Password */}
+            <Input
+              type="password"
+              placeholder="Confirm Password"
+              autoComplete="new-password"
+              error={errors.confirmPassword?.message}
+              {...register("confirmPassword")}
+            />
+
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full h-10 sm:h-11 rounded-lg font-semibold"
+            >
+              {loading ? "Creating Account..." : "Sign Up"}
+            </Button>
           </form>
 
-          <p className="text-xs text-gray-500 text-center mt-5 leading-5">
-            By signing up, you agree to our Terms,
-            Privacy Policy and Cookies Policy.
+          {/* Terms and Conditions */}
+          <p className="text-xs text-muted-foreground text-center mt-5 leading-5">
+            By signing up, you agree to our Terms, Privacy Policy and Cookies
+            Policy.
           </p>
 
         </div>
 
         {/* Login Link */}
-        <div className="bg-white border border-gray-200 rounded-lg mt-3 py-5 text-center">
-
-          <p className="text-sm text-gray-700">
+        <div className="rounded-xl border border-border bg-card text-card-foreground mt-3 px-3 py-5 text-center">
+          <p className="text-sm text-muted-foreground">
             Already have an account?{" "}
-
             <Link
               href="/login"
-              className="text-blue-500 font-semibold"
+              className="text-primary font-semibold hover:underline"
             >
               Log in
             </Link>
           </p>
-
         </div>
 
       </div>
-
-    </div>
+    </main>
   );
 }

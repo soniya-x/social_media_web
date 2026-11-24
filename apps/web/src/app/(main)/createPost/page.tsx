@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { ImagePlus, MapPin, X } from "lucide-react";
 
-
 import {
   Button,
   Card,
@@ -14,7 +13,7 @@ import {
   Input,
   PostCard,
   UserAvatar,
-} from "@/domains/application";
+} from "$domains/application";
 
 export default function CreatePostPage() {
   const [image, setImage] = useState<File | null>(null);
@@ -86,7 +85,7 @@ export default function CreatePostPage() {
   };
 
   return (
-    <div className="mx-aut w-full max-w-[650px] space-y-5 px-3 py-5 sm:px-5">
+    <div className="mx-auto w-full max-w-[650px] space-y-5 px-3 py-5 sm:px-5">
       {/* Page Heading */}
       <div>
         <h1 className="text-2xl font-bold">Create Post</h1>
