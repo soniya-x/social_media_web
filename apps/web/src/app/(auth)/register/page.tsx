@@ -1,13 +1,9 @@
+
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-<<<<<<< HEAD
-import api from "@/lib/axios";
-import { RegisterFormData } from "@/types/auth/auth.types";
-import{ Input,Button }from "$domains/application";
-=======
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,67 +16,14 @@ import {
   registerSchema,
   RegisterFormData,
 } from "$domains/register";
->>>>>>> origin/feat/form-implementation-and-redux-setup
-
 
 export default function RegisterPage() {
   const router = useRouter();
-<<<<<<< HEAD
-=======
 
->>>>>>> origin/feat/form-implementation-and-redux-setup
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-<<<<<<< HEAD
-  // Handle form submission
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-
-    //Extract value directly from the form
-    const formData = new FormData(e.currentTarget);
-    const fullName = formData.get("fullName") as string;
-    const username = formData.get("username") as string;
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const confirmPassword = formData.get("confirmPassword") as string;
-
-    //create registration data
-    const registerData: RegisterFormData = {
-      fullName,
-      username,
-      email,
-      password,
-      confirmPassword,
-    };
-
-    // check password confirmation
-    if (password !== confirmPassword) {
-      setError("Passwords do not match!");
-      return;
-    }
-    try {
-      setLoading(true);
-
-      const respose = await api.post("/users/register", registerData);
-      setSuccess(respose.data.message || "Registration successful!");
-
-      setTimeout(() => {
-        router.push("/login");
-      }, 1500);
-    } catch (error: any) {
-      const message =
-        error.response?.data?.message ||
-        "Registration failed. Please try again.";
-
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
-=======
   const {
     register,
     handleSubmit,
@@ -90,7 +33,7 @@ export default function RegisterPage() {
     mode: "onBlur",
   });
 
-  // Handle form submission
+  // Handle registration API request
   const onSubmit = async (registerData: RegisterFormData) => {
     setError("");
     setSuccess("");
@@ -127,91 +70,42 @@ export default function RegisterPage() {
     } finally {
       setLoading(false);
     }
->>>>>>> origin/feat/form-implementation-and-redux-setup
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-md">
+    <main className="min-h-screen w-full flex items-center justify-center bg-background px-4 py-6 sm:px-6 sm:py-10">
+
+      {/* Main Container */}
+      <div className="w-full max-w-md mx-auto">
+
         {/* Registration Card */}
-        <div className="bg-white border border-gray-200 rounded-lg px-8 py-8">
+        <div className="rounded-xl border border-border bg-card text-card-foreground p-5 sm:p-7 md:p-8 shadow-sm">
+
           {/* Logo */}
-          <h1 className="text-4xl font-bold text-center mb-3 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-bold text-center mb-3 tracking-tight text-foreground">
             SocialGram
           </h1>
 
-          <p className="text-center text-gray-500 font-semibold text-base mb-6">
+          <p className="text-center text-muted-foreground font-medium text-sm sm:text-base mb-6">
             Sign up to see photos and posts from your friends.
           </p>
 
           {/* Error Message */}
           {error && (
-<<<<<<< HEAD
-            <p className="text-red-500 text-sm text-center mb-3">{error}</p>
-=======
-            <p className="text-red-500 text-sm text-center mb-3">
+            <p
+              role="alert"
+              className="text-destructive text-sm text-center mb-3 break-words"
+            >
               {error}
             </p>
->>>>>>> origin/feat/form-implementation-and-redux-setup
           )}
 
           {/* Success Message */}
           {success && (
-<<<<<<< HEAD
-            <p className="text-green-600 text-sm text-center mb-3">{success}</p>
-          )}
-
-          {/* Registration Form */}
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <Input
-              type="text"
-              name="fullName"
-              placeholder="Full Name"
-              required
-            />
-
-            <Input
-              type="text"
-              name="username"
-              placeholder="Username"
-              required
-            />
-
-            <Input
-              type="email"
-              name="email"
-              placeholder="Email Address"
-              required
-            />
-
-            <Input
-              type="password"
-              name="password"
-              placeholder="Password"
-              required
-            />
-
-            <Input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              required
-            />
-
-            <Button type="submit" loading={loading}>
-              {loading ? "Registration user..." : "Sign Up"}
-
-            </Button>
-
-            {/* <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition duration-200"
+            <p
+              role="status"
+              className="text-sm text-center mb-3 text-green-600 dark:text-green-400 break-words"
             >
-              {loading ? "Creating Account..." : "Sign Up"}
-            </button> */}
-=======
-            <p className="text-green-600 text-sm text-center mb-3">
               {success}
             </p>
           )}
@@ -219,116 +113,86 @@ export default function RegisterPage() {
           {/* Registration Form */}
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="space-y-3"
+            className="space-y-4"
             noValidate
           >
-
             {/* Full Name */}
-            <div>
-              <Input
-                type="text"
-                placeholder="Full Name"
-                {...register("fullName")}
-              />
-
-              {errors.fullName && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.fullName.message}
-                </p>
-              )}
-            </div>
+            <Input
+              type="text"
+              placeholder="Full Name"
+              autoComplete="name"
+              error={errors.fullName?.message}
+              {...register("fullName")}
+            />
 
             {/* Username */}
-            <div>
-              <Input
-                type="text"
-                placeholder="Username"
-                {...register("username")}
-              />
-
-              {errors.username && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.username.message}
-                </p>
-              )}
-            </div>
+            <Input
+              type="text"
+              placeholder="Username"
+              autoComplete="username"
+              error={errors.username?.message}
+              {...register("username")}
+            />
 
             {/* Email */}
-            <div>
-              <Input
-                type="email"
-                placeholder="Email Address"
-                {...register("email")}
-              />
-
-              {errors.email && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
+            <Input
+              type="email"
+              placeholder="Email Address"
+              autoComplete="email"
+              error={errors.email?.message}
+              {...register("email")}
+            />
 
             {/* Password */}
-            <div>
-              <Input
-                type="password"
-                placeholder="Password"
-                {...register("password")}
-              />
-
-              {errors.password && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.password.message}
-                </p>
-              )}
-            </div>
+            <Input
+              type="password"
+              placeholder="Password"
+              autoComplete="new-password"
+              error={errors.password?.message}
+              {...register("password")}
+            />
 
             {/* Confirm Password */}
-            <div>
-              <Input
-                type="password"
-                placeholder="Confirm Password"
-                {...register("confirmPassword")}
-              />
-
-              {errors.confirmPassword && (
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.confirmPassword.message}
-                </p>
-              )}
-            </div>
+            <Input
+              type="password"
+              placeholder="Confirm Password"
+              autoComplete="new-password"
+              error={errors.confirmPassword?.message}
+              {...register("confirmPassword")}
+            />
 
             {/* Submit Button */}
-            <Button type="submit" disabled={loading}>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full h-10 sm:h-11 rounded-lg font-semibold"
+            >
               {loading ? "Creating Account..." : "Sign Up"}
             </Button>
-
->>>>>>> origin/feat/form-implementation-and-redux-setup
           </form>
 
-          <p className="text-xs text-gray-500 text-center mt-5 leading-5">
+          {/* Terms and Conditions */}
+          <p className="text-xs text-muted-foreground text-center mt-5 leading-5">
             By signing up, you agree to our Terms, Privacy Policy and Cookies
             Policy.
           </p>
+
         </div>
 
         {/* Login Link */}
-        <div className="bg-white border border-gray-200 rounded-lg mt-3 py-5 text-center">
-          <p className="text-sm text-gray-700">
+        <div className="rounded-xl border border-border bg-card text-card-foreground mt-3 px-3 py-5 text-center">
+          <p className="text-sm text-muted-foreground">
             Already have an account?{" "}
-<<<<<<< HEAD
-            <Link href="/login" className="text-blue-500 font-semibold">
-=======
             <Link
               href="/login"
-              className="text-blue-500 font-semibold"
+              className="text-primary font-semibold hover:underline"
             >
->>>>>>> origin/feat/form-implementation-and-redux-setup
               Log in
             </Link>
           </p>
         </div>
+
       </div>
-    </div>
+    </main>
   );
 }
