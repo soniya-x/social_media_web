@@ -10,6 +10,10 @@ export interface IUser extends Document {
   bio: string;
   followers: Types.ObjectId[];
   following: Types.ObjectId[];
+
+  // Password reset fields
+  resetPasswordToken: string | null;
+  resetPasswordExpires: Date | null;
 }
 
 const userSchema = new Schema<IUser>(
@@ -65,6 +69,18 @@ const userSchema = new Schema<IUser>(
         ref: "User",
       },
     ],
+
+    // Store the hashed password reset token
+    resetPasswordToken: {
+      type: String,
+      default: null,
+    },
+
+    // Store the token expiration time
+    resetPasswordExpires: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

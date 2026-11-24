@@ -1,5 +1,70 @@
 "use client";
 
+<<<<<<< HEAD
+import { useState } from "react";
+import type { FormEvent } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import api from "@/lib/axios";
+import { LoginFormData } from "@/types/auth/auth.types";
+import{ Input,Button }from "$domains/application";
+
+export default function LoginPage() {
+  const router = useRouter();
+  // const [formData, setFormData] = useState<LoginFormData>({
+  //   email: "",
+  //   password: "",
+  // });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
+
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     [name]: value,
+  //   }));
+  // };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError("");
+
+    //exctract value directly from the form
+    const formData = new FormData(e.currentTarget);
+
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    //create login data
+    const loginData: LoginFormData = {
+      email,
+      password,
+    };
+
+    try {
+      setLoading(true);
+      const response = await api.post("/users/login", loginData);
+      const { token, user } = response.data;
+
+      //store jwt tokena and user information
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      alert("Login successful!");
+
+      //redirect to home page
+      router.push("/home");
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message || "Login failed. Please try again.";
+
+      setError(message);
+    } finally {
+      setLoading(false);
+=======
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -42,6 +107,7 @@ export default function LoginPage() {
       router.push("/home");
     } catch {
       // Error is already handled by Redux
+>>>>>>> origin/feat/form-implementation-and-redux-setup
     }
   };
 
@@ -58,6 +124,40 @@ export default function LoginPage() {
             Log in to connect with your friends.
           </p>
 
+<<<<<<< HEAD
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Email */}
+            <Input
+              type="email"
+              name="email"
+              placeholder="Email address"
+              required
+            />
+
+            <Input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+            />
+
+            {/* Login Button */}
+            {/* <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition duration-200"
+            >
+              {loading ? "Logging in..." : "Log In"}
+            </button> */}
+            <Button type="submit" loading={loading}>
+              {loading ? "Logging in..." : "Log In"}
+            </Button>
+
+            {/* Error Message */}
+            {error && (
+              <p className="text-red-500 text-sm text-center mb-4">{error}</p>
+            )}
+=======
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="space-y-4"
@@ -102,6 +202,7 @@ export default function LoginPage() {
             <Button type="submit" disabled={isLoading}>
               {isLoading ? "Logging in..." : "Log In"}
             </Button>
+>>>>>>> origin/feat/form-implementation-and-redux-setup
           </form>
 
           <div className="flex items-center gap-4 my-6">
