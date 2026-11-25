@@ -22,7 +22,7 @@ export const registerUser = async (
   // The request body contains the registration form data.
   // The generic type tells TypeScript the expected response structure.
   const response = await api.post<RegisterApiResponse>(
-    "/users/register",
+    "/auth/register",
     data
   );
 

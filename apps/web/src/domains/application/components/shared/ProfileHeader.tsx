@@ -1,14 +1,6 @@
 
-import { Button,UserAvatar } from "$domains/application";
-
-interface ProfileHeaderProps {
-  name: string;
-  username: string;
-  bio: string;
-  posts: number;
-  followers: number;
-  following: number;
-}
+import { Button, UserAvatar } from "$domains/application";
+import type { ProfileHeaderProps } from "$domains/application";
 
 export function ProfileHeader({
   name,
@@ -17,71 +9,87 @@ export function ProfileHeader({
   posts,
   followers,
   following,
+  profileImage,
+  onImageClick,
+  onEdit,
 }: ProfileHeaderProps) {
   return (
-    <div className="
-      flex flex-col
-      gap-5
-      border-b
-      pb-6
-      sm:gap-7
-      sm:pb-8
-      md:flex-row
-      md:items-start
-      md:gap-10
-      lg:gap-12
-    ">
-
+    <div
+      className="
+        flex flex-col
+        gap-5
+        border-b
+        pb-6
+        sm:gap-7
+        sm:pb-8
+        md:flex-row
+        md:items-start
+        md:gap-10
+        lg:gap-12
+      "
+    >
       {/* Profile Picture */}
       <div className="flex justify-center md:justify-start">
-        <UserAvatar
-          name={name}
-          className="
-            h-24 w-24
-            text-xl
-            sm:h-28 sm:w-28
-            md:h-32 md:w-32
-            md:text-2xl
-          "
-        />
+        <button
+          type="button"
+          onClick={onImageClick}
+          aria-label="Change profile picture"
+        >
+          <UserAvatar
+            name={name}
+            image={profileImage}
+            className="
+              h-24 w-24
+              text-xl
+              sm:h-28 sm:w-28
+              md:h-32 md:w-32
+              md:text-2xl
+            "
+          />
+        </button>
       </div>
 
       {/* Profile Information */}
       <div className="min-w-0 flex-1 space-y-5">
-
-        {/* Username and Edit Button */}
-        <div className="
-          flex flex-col
-          items-center
-          gap-3
-          sm:flex-row
-          sm:justify-center
-          md:justify-start
-        ">
+        <div
+          className="
+            flex flex-col
+            items-center
+            gap-3
+            sm:flex-row
+            sm:justify-center
+            md:justify-start
+          "
+        >
           <h1 className="text-lg font-semibold sm:text-xl">
             {username}
           </h1>
 
-          <Button size="sm" className="w-full sm:w-auto">
+          <Button
+            size="sm"
+            className="w-full sm:w-auto"
+            onClick={onEdit}
+          >
             Edit Profile
           </Button>
         </div>
 
         {/* Profile Statistics */}
-        <div className="
-          flex items-center
-          justify-center
-          gap-5
-          text-center
-          text-xs
-          sm:justify-center
-          sm:gap-8
-          sm:text-sm
-          md:justify-start
-        ">
+        <div
+          className="
+            flex items-center
+            justify-center
+            gap-5
+            text-center
+            text-xs
+            sm:justify-center
+            sm:gap-8
+            sm:text-sm
+            md:justify-start
+          "
+        >
           <p>
-            <strong className="block sm:inline">{posts}</strong>{" "}
-            posts
+            <strong className="block sm:inline">{posts}</strong> posts
           </p>
 
           <p>
@@ -109,7 +117,6 @@ export function ProfileHeader({
             {bio}
           </p>
         </div>
-
       </div>
     </div>
   );
