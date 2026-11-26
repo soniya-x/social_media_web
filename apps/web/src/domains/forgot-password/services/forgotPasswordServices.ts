@@ -7,6 +7,6 @@ import { response } from "express";
 export const forgotPasswordServices=async(
     data:ForgotPasswordPayload
 )=>{
-    const response=await api.post('/users/forgot-password',data)
+    const response=await api.post('/auth/forgot-password',data)
     return response.data;
 }

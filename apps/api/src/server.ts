@@ -1,33 +1,21 @@
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
-import app from './app'
+import env from "./config/env";
+import app from "./app";
 import connectDB from "./config/db";
-import userRoutes from "./routes/user.routes"
 
-dotenv.config();
+const PORT = env.PORT;
 
+// Start server after database connection
+const startServer = async () => {
+  try {
+    await connectDB();
 
-// const app = express();
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Database connection
-connectDB();
-
-// API Routes
-app.use("/api/users", userRoutes);
-
-app.get("/", (req, res) => {
-  res.status(200).send("SocialGram API is running!");
-});
-
-
-const PORT = process.env.PORT || 5001;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+startServer();

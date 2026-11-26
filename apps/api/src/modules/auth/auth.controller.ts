@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
-import User from "../models/User";
+import User from "../users/user.model";
 import jwt from "jsonwebtoken";
 //This generates a secure random token and hashes it before storing it in MongoDB.
 import crypto from "crypto";
-import { sendEmail } from "../services/email.services";
+import { sendEmail } from "../../shared/services/email.services";
 import {
   forgotPasswordSchema,
   resetPasswordSchema,
-} from "../validations/user.validation";
+} from "./auth.validation";
 
 export const registerUser = async (
   req: Request,
@@ -76,7 +76,6 @@ export const registerUser = async (
     });
   }
 };
-
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
@@ -141,8 +140,6 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     });
   }
 };
-
-
 export const forgotPassword = async (
   req: Request,
   res: Response
@@ -255,8 +252,6 @@ if (!validation.success) {
   }
 };
 
-
-
 export const resetPassword = async (
   req: Request,
   res: Response
@@ -326,112 +321,6 @@ export const resetPassword = async (
     res.status(500).json({
       success: false,
       message: "Unable to reset password",
-    });
-  }
-};
-
-
-
-export const getUserProfile = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    const userId = res.locals.userId;
-
-    const user = await User.findById(userId).select("-password");
-
-    if (!user) {
-      res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-      return;
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Profile fetched successfully",
-      user,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch profile",
-    });
-  }
-};
-
-//update the logged -in  user's profile
-export const updateUserProfile = async (
-  req: Request,
-  res: Response,
-): Promise<void> => {
-  try {
-    // Get the logged-in user's ID
-    const userId = res.locals.userId;
-
-    // Get editable profile fields
-    const { fullName, username, bio, profileImage } = req.body;
-
-    // Check whether at least one field is provided
-    if (
-      fullName === undefined &&
-      username === undefined &&
-      bio === undefined &&
-      profileImage === undefined
-    ) {
-      res.status(400).json({
-        success: false,
-        message: "Please provide at least one field to update",
-      });
-      return;
-    }
-
-    // Find the logged-in user
-    const user = await User.findById(userId);
-
-    if (!user) {
-      res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-      return;
-    }
-
-    // Check whether the new username belongs to another user
-    if (username !== undefined && username !== user.username) {
-      const existingUser = await User.findOne({ username });
-
-      if (existingUser) {
-        res.status(409).json({
-          success: false,
-          message: "Username already exists",
-        });
-        return;
-      }
-    }
-
-    // Update only the fields provided by the frontend
-    if (fullName !== undefined) user.fullName = fullName;
-    if (username !== undefined) user.username = username;
-    if (bio !== undefined) user.bio = bio;
-    if (profileImage !== undefined) user.profileImage = profileImage;
-
-    // Save updated user
-    await user.save();
-
-    res.status(200).json({
-      success: true,
-      message: "Profile updated successfully",
-      user,
-    });
-  } catch (error) {
-    console.error("Update profile error:", error);
-
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
     });
   }
 };

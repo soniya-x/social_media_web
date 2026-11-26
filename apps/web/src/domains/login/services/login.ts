@@ -6,7 +6,7 @@ export const loginUser = async (
   credentials: LoginFormData
 ): Promise<LoginApiResponse> => {
   const response = await api.post<LoginApiResponse>(
-    "/users/login",
+    "/auth/login",
     credentials
   );
 

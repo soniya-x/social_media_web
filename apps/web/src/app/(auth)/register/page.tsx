@@ -8,20 +8,29 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import api from "@/lib/axios";
-
-import { Input, Button } from "$domains/application";
+import {
+  Input,
+  Button,
+  useAppDispatch,
+  useAppSelector,
+} from "$domains/application";
 
 import {
   registerSchema,
   RegisterFormData,
+  registerAction,
 } from "$domains/register";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  // Get registration loading and error states from Redux
+  const { isLoading, error } = useAppSelector(
+    (state) => state.register
+  );
+
+  // Success message is local UI state
   const [success, setSuccess] = useState("");
 
   const {
@@ -33,42 +42,26 @@ export default function RegisterPage() {
     mode: "onBlur",
   });
 
-  // Handle registration API request
+  // Handle registration using Redux thunk
   const onSubmit = async (registerData: RegisterFormData) => {
-    setError("");
     setSuccess("");
 
     try {
-      setLoading(true);
-
-      const response = await api.post(
-        "/users/register",
-        registerData
-      );
+      const response = await dispatch(
+        registerAction(registerData)
+      ).unwrap();
 
       setSuccess(
-        response.data.message || "Registration successful!"
+        response.message || "Registration successful!"
       );
 
+      // Redirect to login after successful registration
       setTimeout(() => {
         router.push("/login");
       }, 1500);
 
-    } catch (error: unknown) {
-      const message =
-        (error as {
-          response?: {
-            data?: {
-              message?: string;
-            };
-          };
-        }).response?.data?.message ||
-        "Registration failed. Please try again.";
-
-      setError(message);
-
-    } finally {
-      setLoading(false);
+    } catch {
+      // Error is already handled by Redux
     }
   };
 
@@ -164,10 +157,10 @@ export default function RegisterPage() {
             {/* Submit Button */}
             <Button
               type="submit"
-              disabled={loading}
+              disabled={isLoading}
               className="w-full h-10 sm:h-11 rounded-lg font-semibold"
             >
-              {loading ? "Creating Account..." : "Sign Up"}
+              {isLoading ? "Creating Account..." : "Sign Up"}
             </Button>
           </form>
 
