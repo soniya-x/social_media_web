@@ -1,14 +1,14 @@
 import { Request, Response } from "express";
+import { OAuth2Client } from "google-auth-library";
 import bcrypt from "bcryptjs";
-import User from "../users/user.model";
 import jwt from "jsonwebtoken";
-//This generates a secure random token and hashes it before storing it in MongoDB.
 import crypto from "crypto";
+
+import User from "../users/user.model";
 import { sendEmail } from "../../shared/services/email.services";
-import {
-  forgotPasswordSchema,
-  resetPasswordSchema,
-} from "./auth.validation";
+import { forgotPasswordSchema, resetPasswordSchema } from "./auth.validation";
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export const registerUser = async (
   req: Request,
@@ -142,22 +142,22 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 };
 export const forgotPassword = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     // Get email from frontend request
     // const { email } = req.body;
 
- // Validate email using Zod
-const validation = forgotPasswordSchema.safeParse(req.body);
+    // Validate email using Zod
+    const validation = forgotPasswordSchema.safeParse(req.body);
 
-if (!validation.success) {
-  res.status(400).json({
-    success: false,
-    message: validation.error.issues[0].message,
-  });
-  return;
-}
+    if (!validation.success) {
+      res.status(400).json({
+        success: false,
+        message: validation.error.issues[0].message,
+      });
+      return;
+    }
 
     // Normalize email
     const normalizedEmail = validation.data.email.toLowerCase();
@@ -189,9 +189,7 @@ if (!validation.success) {
       .digest("hex");
 
     // Set token expiry to 15 minutes
-    const resetTokenExpires = new Date(
-      Date.now() + 15 * 60 * 1000
-    );
+    const resetTokenExpires = new Date(Date.now() + 15 * 60 * 1000);
 
     // Save hashed token and expiry
     user.resetPasswordToken = hashedToken;
@@ -207,8 +205,7 @@ if (!validation.success) {
     }
 
     // Create reset password URL
-    const resetUrl =
-      `${clientUrl}/reset-password/${resetToken}`;
+    const resetUrl = `${clientUrl}/reset-password/${resetToken}`;
 
     // Create email template
     const emailTemplate = `
@@ -225,7 +222,7 @@ if (!validation.success) {
       await sendEmail(
         user.email,
         "Reset Your SocialGram Password",
-        emailTemplate
+        emailTemplate,
       );
     } catch (error) {
       // Clear token if email sending fails
@@ -254,7 +251,7 @@ if (!validation.success) {
 
 export const resetPassword = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     // Step 1: Get reset token from URL parameters
@@ -276,10 +273,7 @@ export const resetPassword = async (
     const { password } = validation.data;
 
     // Step 4: Hash the token received from the email link
-    const hashedToken = crypto
-      .createHash("sha256")
-      .update(token)
-      .digest("hex");
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
     // Step 5: Find user with matching token that has not expired
     const user = await User.findOne({
@@ -314,13 +308,134 @@ export const resetPassword = async (
       success: true,
       message: "Password reset successfully. Please login.",
     });
-
   } catch (error) {
     console.error("Reset password error:", error);
 
     res.status(500).json({
       success: false,
       message: "Unable to reset password",
+    });
+  }
+};
+
+export const googleLogin = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
+  try {
+    const { credential } = req.body as {
+      credential?: string;
+    };
+
+    if (!credential) {
+      return res.status(400).json({
+        success: false,
+        message: "Google credential is required",
+      });
+    }
+
+    // Verify Google ID token
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+
+    if (!payload) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid Google credential",
+      });
+    }
+
+    const { sub: googleId, name, email, picture, email_verified } = payload;
+
+    if (!email || !email_verified) {
+      return res.status(401).json({
+        success: false,
+        message: "Google email is not verified",
+      });
+    }
+
+    // Find existing Google user
+    let user = await User.findOne({ googleId });
+
+    // Create new user if not found
+    if (!user) {
+      // Check existing email account
+      const existingUser = await User.findOne({ email });
+
+      if (existingUser) {
+        return res.status(409).json({
+          success: false,
+          message:
+            "An account already exists with this email. Please login using your existing method.",
+        });
+      }
+
+      // Generate unique username
+      const baseUsername =
+        email
+          .split("@")[0]
+          .toLowerCase()
+          .replace(/[^a-z0-9_]/g, "") || "user";
+
+      let username = baseUsername;
+      let count = 1;
+
+      while (await User.exists({ username })) {
+        username = `${baseUsername}${count++}`;
+      }
+
+      // Create user according to User Schema
+      user = await User.create({
+        fullName: name || username,
+        username,
+        email,
+        googleId,
+        profileImage: picture || "",
+        authProvider: "google",
+        isEmailVerified: true,
+        bio: "",
+        followers: [],
+        following: [],
+      });
+    }
+
+    // Generate JWT
+    const jwtSecret = process.env.JWT_SECRET;
+
+    if (!jwtSecret) {
+      throw new Error("JWT_SECRET is not configured");
+    }
+
+    const token = jwt.sign({ userId: user._id.toString() }, jwtSecret, {
+      expiresIn: "7d",
+    });
+
+    // Return sanitized user data
+    return res.status(200).json({
+      success: true,
+      message: "Google login successful",
+      token,
+      user: {
+        _id: user._id,
+        fullName: user.fullName,
+        username: user.username,
+        email: user.email,
+        profileImage: user.profileImage,
+        bio: user.bio,
+        isEmailVerified: user.isEmailVerified,
+        authProvider: user.authProvider,
+      },
+    });
+  } catch (error: unknown) {
+    console.error("Google Login Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Google authentication failed",
     });
   }
 };

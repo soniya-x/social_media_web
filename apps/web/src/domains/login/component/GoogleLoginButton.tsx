@@ -16,9 +16,8 @@ interface GoogleLoginResponse {
 }
 
 const GoogleLoginButton = () => {
+  const router = useRouter();
 
-      const router = useRouter();
-    
   const handleGoogleSuccess = async (
     response: CredentialResponse,
   ): Promise<void> => {
@@ -28,36 +27,16 @@ const GoogleLoginButton = () => {
       }
 
       const result = await axios.post<GoogleLoginResponse>(
-        process.env.NEXT_PUBLIC_API_URL + "/users/google",
+        process.env.NEXT_PUBLIC_API_URL + "/auth/google",
         {
           credential: response.credential,
         },
       );
-
-      console.log("Logged in user:", result.data.user);
-      console.log("JWT Token:", result.data.token);
-
       localStorage.setItem("token", result.data.token);
       localStorage.setItem("user", JSON.stringify(result.data.user));
 
-       router.push("/home");
-
-      // TODO: Store user in auth context/state.
-      // Prefer HTTP-only cookies for production JWT storage.
-
-      // } catch (error: unknown) {
-      //   if (axios.isAxiosError(error)) {
-      //     console.error(
-      //       error.response?.data?.message || error.message
-      //     );
-      //   } else if (error instanceof Error) {
-      //     console.error(error.message);
-      //   } else {
-      //     console.error("Something went wrong");
-      //   }
-      // }
+      router.push("/home");
     } catch (error: unknown) {
-      console.log("error ===>", error);
       if (axios.isAxiosError<{ message?: string }>(error)) {
         console.error(error.response?.data?.message ?? error.message);
       } else if (error instanceof Error) {
