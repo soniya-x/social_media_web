@@ -24,7 +24,7 @@ export function UserAvatar({
 
   return (
     <Avatar className={className}>
-      <AvatarImage src={image} alt={name} />
+      {image && <AvatarImage src={image} alt={name} />}
       <AvatarFallback>{initials}</AvatarFallback>
     </Avatar>
   );

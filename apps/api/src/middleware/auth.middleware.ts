@@ -1,5 +1,6 @@
 import { Request,Response,NextFunction } from "express";
 import jwt from "jsonwebtoken"
+import env from "../config/env";
 
 interface JwtPayload{
     userId:string;
@@ -23,13 +24,14 @@ export const authMiddleware=(
             return;
         }
         const token=authHeader.split(" ")[1]
-        const secret= process.env.JWT_SECRET;
+        const secret= env.JWT_SECRET;
 
     if(!secret){
         throw new Error("JWT_SECRET is missing")
     }
     // Verify JWT token
     const decoded=jwt.verify(token,secret) as JwtPayload;
+    // console.log("MIDDLEWARE JWT SECRET EXISTS:", Boolean(env.JWT_SECRET));
 
     //store authenticated user Id in request 
     res.locals.userId=decoded.userId;

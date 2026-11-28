@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 //This generates a secure random token and hashes it before storing it in MongoDB.
 import crypto from "crypto";
 import { sendEmail } from "../../shared/services/email.services";
+import env from "../../config/env";
 import {
   forgotPasswordSchema,
   resetPasswordSchema,
@@ -111,7 +112,9 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     }
 
     //Generate JWT Token
-    const secret = process.env.JWT_SECRET;
+    const secret = env.JWT_SECRET;
+
+    // console.log("LOGIN JWT SECRET EXISTS:", Boolean(env.JWT_SECRET));
 
     if (!secret) {
       throw new Error("JWT_SECRET is missing");

@@ -1,4 +1,4 @@
-import { ProfileFormData } from "./ProfileSchema";
+import { ProfileFormData } from "../validations/profileValidation";
 // Represents the user profile returned by the backend
 export interface UserProfile {
   _id: string;
@@ -24,3 +24,4 @@ export interface ProfileApiResponse {
   onCancel: () => void;
   onSubmit: (data: ProfileFormData) => Promise<void>;
 }
+

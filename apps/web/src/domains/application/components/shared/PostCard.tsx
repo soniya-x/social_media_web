@@ -1,11 +1,6 @@
+"use client";
 
-import {
-  Heart,
-  MessageCircle,
-  Send,
-  Bookmark,
-  MoreHorizontal,
-} from "lucide-react";
+import { Heart, MessageCircle, Send, Bookmark, Trash2 } from "lucide-react";
 
 import {
   Card,
@@ -15,9 +10,6 @@ import {
   UserAvatar,
 } from "$domains/application";
 
-// import { Button } from "$domains/application";
-// import UserAvatar from "$domains/application";
-
 interface PostCardProps {
   username: string;
   name: string;
@@ -26,6 +18,12 @@ interface PostCardProps {
   likes: number;
   comments: number;
   image: string;
+
+  // Delete post functionality
+  postId?: string;
+  isOwnPost?: boolean;
+  onDelete?: (postId: string) => void;
+  isDeleting?: boolean;
 }
 
 export function PostCard({
@@ -36,41 +34,46 @@ export function PostCard({
   likes,
   comments,
   image,
+  postId,
+  isOwnPost = false,
+  onDelete,
+  isDeleting = false,
 }: PostCardProps) {
   return (
     <Card className="w-full overflow-hidden border shadow-sm">
-
       {/* Post Header */}
-      <CardHeader className="
-        flex flex-row items-center
-        gap-2
-        p-3
-        sm:gap-3
-        sm:p-4
-      ">
-        <UserAvatar
-          name={name}
-          className="h-9 w-9 shrink-0 sm:h-11 sm:w-11"
-        />
+      <CardHeader
+        className="
+          flex flex-row items-center
+          gap-2
+          p-3
+          sm:gap-3
+          sm:p-4
+        "
+      >
+        <UserAvatar name={name} className="h-9 w-9 shrink-0 sm:h-11 sm:w-11" />
 
         <div className="min-w-0 flex-1">
-          <p className="truncate text-xs font-semibold sm:text-sm">
-            {name}
-          </p>
+          <p className="truncate text-xs font-semibold sm:text-sm">{name}</p>
 
           <p className="truncate text-[11px] text-muted-foreground sm:text-xs">
             @{username} · {time}
           </p>
         </div>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 shrink-0 sm:h-9 sm:w-9"
-          aria-label="More post options"
-        >
-          <MoreHorizontal size={20} />
-        </Button>
+        {/* Delete button appears only on own posts */}
+        {isOwnPost && postId && onDelete && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 shrink-0 sm:h-9 sm:w-9"
+            aria-label="Delete post"
+            disabled={isDeleting}
+            onClick={() => onDelete(postId)}
+          >
+            <Trash2 size={18} />
+          </Button>
+        )}
       </CardHeader>
 
       {/* Post Image */}
@@ -91,7 +94,6 @@ export function PostCard({
 
       {/* Post Actions */}
       <div className="flex items-center justify-between px-2 pt-2 sm:px-3 sm:pt-3">
-
         <div className="flex items-center gap-0 sm:gap-1">
           <Button
             variant="ghost"
@@ -133,22 +135,18 @@ export function PostCard({
 
       {/* Post Details */}
       <div className="space-y-2 px-3 pb-3 sm:px-4 sm:pb-4">
-
         <p className="text-xs font-semibold sm:text-sm">
           {likes.toLocaleString()} likes
         </p>
 
         <p className="break-words text-xs sm:text-sm">
-          <span className="mr-2 font-semibold">
-            {username}
-          </span>
+          <span className="mr-2 font-semibold">{username}</span>
           {caption}
         </p>
 
         <p className="cursor-pointer text-xs text-muted-foreground sm:text-sm">
           View all {comments} comments
         </p>
-
       </div>
     </Card>
   );

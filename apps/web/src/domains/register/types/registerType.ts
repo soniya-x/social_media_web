@@ -1,7 +1,13 @@
 
-import type { RegisterFormData } from "./registerSchema";
 
 export type RegisterRequest = RegisterFormData;
+export interface RegisterFormData {
+  fullName: string;
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
 
 export interface RegisteredUser {
   id: string;

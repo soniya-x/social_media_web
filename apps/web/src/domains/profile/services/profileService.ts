@@ -42,4 +42,3 @@ export const uploadProfileImage=async(
 return response.data;
 
 }
-

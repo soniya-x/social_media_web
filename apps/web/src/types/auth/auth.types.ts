@@ -1,5 +1,5 @@
 
-// Login form data
+//Login form data
 export interface LoginFormData {
   email: string;
   password: string;

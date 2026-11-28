@@ -3,7 +3,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { profileSchema ,type ProfileFormData } from "../types/ProfileSchema";
+import { profileSchema ,type ProfileFormData } from "$domains/profile";
 import { ProfileFormProps } from "../types/profileType";
 
 export default function ProfileForm({

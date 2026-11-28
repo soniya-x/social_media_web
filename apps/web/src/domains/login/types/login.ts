@@ -1,3 +1,8 @@
+// Login form data
+export interface LoginFormData {
+  email: string;
+  password: string;
+}
 
 export interface LoginApiResponse {
   token: string;
@@ -18,7 +23,12 @@ export type LoginActionResult =
 
 
 export interface AuthUser {
-  [key: string]: unknown;
+  _id: string;
+  fullName: string;
+  username: string;
+  email: string;
+  profileImage?: string;
+  bio?: string;
 }
 
 export interface AuthState {

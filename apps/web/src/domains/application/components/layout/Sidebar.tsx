@@ -23,7 +23,7 @@ const navigation = [
   { label: "Search", href: "/search", icon: Search },
   { label: "Messages", href: "/messages", icon: Send },
   { label: "Notifications", href: "/notifications", icon: Heart },
-  { label: "Create Post", href: "/create", icon: SquarePlus },
+  { label: "Create Post", href: "/create-post", icon: SquarePlus },
   { label: "Profile", href: "/profile", icon: UserRound },
   { label: "Settings", href: "/settings", icon: Settings },
 ];

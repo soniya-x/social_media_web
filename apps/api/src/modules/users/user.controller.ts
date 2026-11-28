@@ -6,8 +6,7 @@ import {
 } from "../users/user.service";
 import { uploadImageToCloudinary } from "../../shared/services/cloudinary.service";
 import { updateProfileImageService } from "../users/user.service";
-import { promises } from "dns";
-import { success } from "zod";
+
 
 // GET logged-in user's profile
 export const getUserProfile = async (
@@ -139,24 +138,11 @@ export const uploadProfileImage = async (
       user,
     });
 } catch (error) {
-  console.error("Profile image upload error:", error);
+    console.error("Profile image upload error:", error);
 
-  res.status(500).json({
-    success: false,
-    message:
-      error instanceof Error
-        ? error.message
-        : "Failed to upload profile image",
-  });
-}
-
-
-  // } catch (error) {
-  //   console.error("Profile image upload error:", error);
-
-  //   res.status(500).json({
-  //     success: false,
-  //     message: "Failed to upload profile image",
-  //   });
-  // }
+    res.status(500).json({
+      success: false,
+      message: "Failed to upload profile image",
+    });
+  }
 };

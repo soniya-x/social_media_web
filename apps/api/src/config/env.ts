@@ -2,9 +2,12 @@ import dotenv from "dotenv";
 import path from "path";
 
 // Load environment variables
-dotenv.config({
+ const result=dotenv.config({
   path: path.resolve(process.cwd(), ".env"),
 });
+// console.log("ENV FILE PATH:", path.resolve(process.cwd(), ".env"));
+// console.log("ENV FILE LOADED:", !result.error);
+// console.log("JWT SECRET EXISTS:", Boolean(process.env.JWT_SECRET)); 
 
 
 // Centralized environment configuration
