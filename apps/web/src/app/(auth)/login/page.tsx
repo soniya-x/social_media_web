@@ -13,19 +13,14 @@ import {
   useAppSelector,
 } from "$domains/application";
 
-import {
-  loginSchema,
-  LoginFormData,
-  loginAction,
-} from "$domains/login";
+import { loginSchema, LoginFormData, loginAction } from "$domains/login";
+import GoogleLoginButton from "@/domains/login/component/GoogleLoginButton";
 
 export default function LoginPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const { isLoading, error } = useAppSelector(
-    (state) => state.user
-  );
+  const { isLoading, error } = useAppSelector((state) => state.user);
 
   const {
     register,
@@ -114,6 +109,9 @@ export default function LoginPage() {
             </Button>
           </form>
 
+         <div className="py-3">
+           <GoogleLoginButton />
+         </div>
           {/* OR Divider */}
           <div className="flex items-center gap-4 my-6">
             <div className="flex-1 border-t border-border" />
